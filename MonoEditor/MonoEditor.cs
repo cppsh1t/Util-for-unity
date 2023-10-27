@@ -6,15 +6,17 @@ using System.Reflection;
 using System.Linq;
 using UnityEngine.UIElements;
 
-[AttributeUsage(AttributeTargets.Method)]
-public class OnInspectorAttribute : Attribute
+namespace Dwell
 {
-    public string Name { get; private set; }
+    [AttributeUsage(AttributeTargets.Method)]
+    public class OnInspectorAttribute : Attribute
+    {
+        public string Name { get; private set; }
 
-    public OnInspectorAttribute() { }
+        public OnInspectorAttribute() { }
 
-    public OnInspectorAttribute(string name) => Name = name;
-}
+        public OnInspectorAttribute(string name) => Name = name;
+    }
 
 
 #if UNITY_EDITOR
@@ -89,3 +91,5 @@ public class MonoEditor : Editor
 }
 
 #endif
+}
+
