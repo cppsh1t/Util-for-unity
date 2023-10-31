@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Linq;
 using UnityEngine.UIElements;
 
-namespace Dwell
+namespace UnityUtil.Editor
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class OnInspectorAttribute : Attribute
