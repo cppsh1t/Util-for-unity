@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Dwell
+namespace UnityUtil
 {
     public interface IBean
     {
