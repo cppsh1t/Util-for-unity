@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 
 
-namespace Dwell.MonoTimer
+namespace UnityUtil.MonoTimer
 {
     /// <summary>
     /// 添加延时误差用的类
