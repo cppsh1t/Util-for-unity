@@ -1,0 +1,1 @@
+Use function currying to encapsulate delayed callbacks or interval callbacks in coroutines run by MonoBehaviour, with support for canceling callbacks.
