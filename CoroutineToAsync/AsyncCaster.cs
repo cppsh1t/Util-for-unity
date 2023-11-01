@@ -5,13 +5,8 @@ using UnityEngine;
 
 namespace UnityUtil.CoroutineToAsync
 {
-    public interface IToken
-    {
-        public abstract bool Canceled { get; }
-        void Cancel();
-    }
 
-    public class Token : IToken
+    public class Token 
     {
         public bool Canceled { get; private set; } = false;
 
@@ -21,31 +16,6 @@ namespace UnityUtil.CoroutineToAsync
         }
     }
 
-    public class SetToken : IToken
-    {
-        public bool Canceled { get; private set; } = false;
-
-        private readonly HashSet<IToken> tokens = new();
-
-        public void AddToken(IToken token)
-        {
-            tokens.Add(token);
-        }
-
-        public void RemoveToken(IToken token)
-        {
-            tokens.Remove(token);
-        }
-
-        public void Cancel()
-        {
-            Canceled = false;
-            foreach (var token in tokens)
-            {
-                token.Cancel();
-            }
-        }
-    }
 
     public static class AsyncCaster
     {
@@ -79,7 +49,7 @@ namespace UnityUtil.CoroutineToAsync
         }
 
 
-        public static void DelayInvoke(Action callback, IToken token, YieldInstruction yieldInstruction = null)
+        public static void DelayInvoke(Action callback, Token token, YieldInstruction yieldInstruction = null)
         {
             IEnumerator CallBackCaster()
             {
@@ -92,7 +62,7 @@ namespace UnityUtil.CoroutineToAsync
             behaviour.StartCoroutine(CallBackCaster());
         }
 
-        public static void DelayInvoke(Action callback, IToken token, CustomYieldInstruction yieldInstruction = null)
+        public static void DelayInvoke(Action callback, Token token, CustomYieldInstruction yieldInstruction = null)
         {
             IEnumerator CallBackCaster()
             {
@@ -131,7 +101,7 @@ namespace UnityUtil.CoroutineToAsync
             behaviour.StartCoroutine(CallBackCaster());
         }
 
-        public static void IntervalInvoke(Action callback, IToken token, YieldInstruction yieldInstruction = null)
+        public static void IntervalInvoke(Action callback, Token token, YieldInstruction yieldInstruction = null)
         {
             IEnumerator CallBackCaster()
             {
