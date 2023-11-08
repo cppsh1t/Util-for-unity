@@ -1,0 +1,1 @@
+more convenient to log objects
