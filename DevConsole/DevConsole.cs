@@ -1,115 +1,13 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
-using Unity.VisualScripting;
+using System.Linq;
+using TMPro;
+using UnityEngine.UI;
 
 namespace UnityUtil.DevConsole
 {
-    public abstract class ConsoleCommand
-    {
-        public abstract string Name { get; }
-        internal abstract string? SuccessMessage { get; }
-        internal abstract string? ErrorMessage { get; }
-        internal abstract Delegate CallBack { get; }
-
-        internal string Execute(string[] args)
-        {
-            try
-            {
-                ProcessCommand(args);
-                return $"[success] {SuccessMessage} -- [from] {Name}" ?? string.Empty;
-            }
-            catch (Exception e)
-            {
-                string msg = string.IsNullOrEmpty(ErrorMessage) ? e.Message : ErrorMessage;
-                return $"[error] {msg} -- [from] {Name}";
-            }
-
-        }
-
-        private void ProcessCommand(string[] args)
-        {
-            ParameterInfo[] parameters = CallBack.Method.GetParameters();
-            if (parameters.Length == 0)
-            {
-                CallBack.DynamicInvoke();
-            }
-            else
-            {
-                object[] castArgs = new object[parameters.Length];
-                for (int i = 0; i < parameters.Length; i++)
-                {
-                    Type paramType = parameters[i].ParameterType;
-                    castArgs[i] = ConvertString(args[i], paramType);
-                }
-                CallBack.DynamicInvoke(castArgs);
-            }
-        }
-
-        private static object ConvertString(string str, Type targetType)
-        {
-            if (targetType == typeof(string)) return str;
-            if (targetType == typeof(object)) return str;
-
-            if (targetType == typeof(int))
-            {
-                return Convert.ToInt32(str);
-            }
-            if (targetType == typeof(double))
-            {
-                return Convert.ToDouble(str);
-            }
-            if (targetType == typeof(float))
-            {
-                return Convert.ToSingle(str);
-            }
-            if (targetType == typeof(bool))
-            {
-                return Convert.ToBoolean(str);
-            }
-            if (targetType == typeof(byte))
-            {
-                return Convert.ToByte(str);
-            }
-            if (targetType == typeof(char))
-            {
-                return Convert.ToChar(str);
-            }
-            throw new InvalidConversionException($"string can't cast to {targetType}");
-        }
-
-
-
-    }
-
-    public class GeneralConsoleCommand : ConsoleCommand
-    {
-
-        private readonly string? successMsg;
-        private readonly string? errorMsg;
-        private readonly string? name;
-        private readonly Delegate command;
-
-        internal override string? SuccessMessage => successMsg;
-
-        internal override string? ErrorMessage => errorMsg;
-
-        public override string Name => name!;
-
-        internal override Delegate CallBack => command;
-
-        public GeneralConsoleCommand(Delegate @delegate, string name, string? successMsg = null, string? errorMsg = null)
-        {
-            command = @delegate;
-            this.successMsg = successMsg;
-            this.errorMsg = errorMsg;
-            this.name = name;
-        }
-    }
-
-
     public class DevConsole
     {
         protected Dictionary<string, ConsoleCommand> commandMap = new();
@@ -119,7 +17,11 @@ namespace UnityUtil.DevConsole
         public void AddCommand(ConsoleCommand command)
         {
             string commandName = command.Name;
-            commandMap.TryAdd(commandName, command);
+            bool success = commandMap.TryAdd(commandName, command);
+            if (!success)
+            {
+                Debug.LogWarning($"{commandName} has been added before");
+            }
         }
 
         public void AddCommand(params ConsoleCommand[] commands)
@@ -159,7 +61,97 @@ namespace UnityUtil.DevConsole
             return messages.ToArray();
         }
 
+
+        public void DumpCommands()
+        {
+            commandMap.Dump();
+        }
+    }
+
+    public class WrapperConsole
+    {
+        private readonly DevConsole console = new ScanableConsole();
+        private readonly TMP_Text history;
+        private readonly Button btn;
+        private readonly TMP_InputField inputField;
+        private readonly LoopFixedCircle<string> commandCircle = new(10);
+
+        public WrapperConsole(TMP_Text history, Button btn, TMP_InputField inputField)
+        {
+            this.history = history;
+            this.btn = btn;
+            this.inputField = inputField;
+            btn.onClick.AddListener(SendCommand);
+        }
+
+        public void AddCommand(ConsoleCommand command)
+        {
+            console.AddCommand(command);
+        }
+
+        public void AddCommand(params ConsoleCommand[] commands)
+        {
+            console.AddCommand(commands);
+        }
+
+        public void AddCommand(IEnumerable<ConsoleCommand> commands)
+        {
+            console.AddCommand(commands);
+        }
+
+        public void SendCommand()
+        {
+            string command = inputField.text;
+            commandCircle.Push(command);
+            if (string.IsNullOrEmpty(command)) return;
+            if (command.Contains(";"))
+            {
+                string[] commands = command.Split(";");
+                for (int i = 0; i < commands.Length; i++)
+                {
+                    ExecuteCommand(commands[i]);
+                }
+            }
+            else
+            {
+                ExecuteCommand(command);
+            }
+
+            inputField.text = "";
+            history.text = string.Join("\n", console.GetMessages());
+            inputField.ActivateInputField();
+        }
+
+        private void ExecuteCommand(string command)
+        {
+            if (command.Contains(" "))
+            {
+                string[] all = command.Split(" ");
+                command = all.First();
+                string[] args = all.Skip(1).ToArray();
+                console.ExecuteCommand(command, args);
+            }
+            else
+            {
+                console.ExecuteCommand(command, null);
+            }
+
+        }
+
+        public string GetNextCommand()
+        {
+            return commandCircle.Next();
+        }
+
+        public string GetLastCommand()
+        {
+            return commandCircle.Last();
+        }
+
+
+        public void DumpCommands()
+        {
+            console.DumpCommands();
+        }
     }
 }
-
-
