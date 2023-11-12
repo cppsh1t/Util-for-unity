@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root shit="holy">
+    <RepeatNode>
+        <SequenceNode>
+            <WaitNode duration ="1" />
+            <LogNode message = "just log" />
+        </SequenceNode>
+    </RepeatNode>
+</Root>
