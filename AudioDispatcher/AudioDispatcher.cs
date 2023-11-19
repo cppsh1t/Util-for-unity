@@ -38,7 +38,7 @@ namespace UnityUtil.AudioDispatcher
             //TODO: Init by Option
             AudioSource audioSource = player.AudioSource;
             audioSource.clip = audioClip;
-            audioSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups(option.AudioMixerName).FirstOrDefault() 
+            audioSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups(option.AudioMixerName).FirstOrDefault()
                 ?? audioMixer.FindMatchingGroups("Msater").First();
 
             audioSource.mute = option.Mute;
@@ -63,9 +63,9 @@ namespace UnityUtil.AudioDispatcher
             audioSource.ignoreListenerVolume = option.IgnoreListenerVolume;
             audioSource.spatialize = option.Spatialize;
             audioSource.spatializePostEffects = option.SpatializePostEffects;
-            audioSource.time = option.Time;
             audioSource.timeSamples = option.TimeSamples;
             audioSource.velocityUpdateMode = option.VelocityUpdateMode;
+            audioSource.SetTime(option.StartTime);
         }
 
         public AudioPlayer GetPlayer(string path)
@@ -91,23 +91,28 @@ namespace UnityUtil.AudioDispatcher
         public void PlayOnPosition(string path, Vector3 position, AudioToken token = null)
         {
             AudioPlayer player = GetPlayer(path);
-            if (player != null)
-            {
-                player.transform.position = position;
-                player.Play(token);
-            }
+            player.PlayOnPosition(position, token);
         }
 
         public void PlayOnTransform(string path, Transform transform, AudioToken token = null)
         {
             AudioPlayer player = GetPlayer(path);
-            if (player != null)
-            {
-                player.transform.SetParent(transform);
-                player.Play(token);
-            }
+            player.PlayOnTransform(transform, token);
+        }
+
+        public void PlayDelayed(string path, float delay, AudioToken token = null)
+        {
+            AudioPlayer player = GetPlayer(path);
+            player?.PlayDelayed(delay, token);
         }
     }
 
+    static class AudioSourceExtension
+    {
+        public static void SetTime(this AudioSource self, float time)
+        {
+            self.time = time;
+        }
+    }
 }
 

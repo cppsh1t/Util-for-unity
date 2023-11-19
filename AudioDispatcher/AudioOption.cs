@@ -6,7 +6,7 @@ namespace UnityUtil.AudioDispatcher
 {
     public class AudioOption
     {
-        public static AudioOption DefaultOption { get; } = new AudioOption();
+        public static AudioOption DefaultOption { get; } = new AudioOption("");
         public string Path { get; set; }
         public string AudioMixerName { get; set; } = "Master";
         public bool Mute { get; set; } = false;
@@ -31,9 +31,12 @@ namespace UnityUtil.AudioDispatcher
         public bool IgnoreListenerVolume { get; set; } = false;
         public bool Spatialize { get; set; } = false;
         public bool SpatializePostEffects { get; set; } = false;
-        public float Time { get; set; } = 0;
+        public float StartTime { get; set; } = 0;
         public int TimeSamples { get; set; } = 0;
         public AudioVelocityUpdateMode VelocityUpdateMode { get; set; } = AudioVelocityUpdateMode.Auto;
-
+        public AudioOption(string path) 
+        {
+            Path = path;
+        }
     }
 }
