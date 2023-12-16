@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/Test/TestGraph/NodeGraph.uss?fileID=7433441132597879392&amp;guid=e2b05f81ca1ba494f826968355716bfd&amp;type=3#NodeGraph" />
+    <ui:TwoPaneSplitView fixed-pane-initial-dimension="250">
+        <ui:VisualElement name="InspectorPanel">
+            <ui:Label text="Inspector" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; -unity-font-style: bold; width: 100%; height: 3%;" />
+            <UnityUtil.BehaviourTree.Editor.XmlField name="XmlField" type="UnityEngine.TextAsset, UnityEngine.CoreModule" />
+            <ui:VisualElement name="ButtonBox" style="height: 5%; flex-direction: row;">
+                <ui:Button text="Load" display-tooltip-when-elided="true" name="Load" style="flex-direction: row; width: 48%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-right: 3px; margin-left: 0;" />
+                <ui:Button text="Save" display-tooltip-when-elided="true" name="Save" style="flex-direction: row-reverse; width: 48%; white-space: nowrap; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-right: 0; margin-left: 3px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Inspector" style="height: 100%;">
+                <ui:Label text="NodeName" display-tooltip-when-elided="true" name="NodeName" style="-unity-text-align: upper-center;" />
+                <ui:VisualElement name="ValueBox" style="height: 100%;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="NodeViewPanel">
+            <ui:Label text="GraphView&#10;" display-tooltip-when-elided="true" style="height: 3%; width: 100%; -unity-text-align: upper-center; -unity-font-style: bold;" />
+            <UnityUtil.BehaviourTree.Editor.NodeCanvas focusable="true" name="NodeCanvas" style="flex-grow: 1;" />
+        </ui:VisualElement>
+    </ui:TwoPaneSplitView>
+</ui:UXML>

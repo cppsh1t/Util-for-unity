@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<RootNode _width="103" _hegiht="77" _x="223" _y="-156">
+  <RepeatNode _width="117" _hegiht="77" _x="200" _y="0">
+    <SequenceNode _width="134" _hegiht="77" _x="192" _y="124">
+      <WaitNode _width="102" _hegiht="77" _x="326" _y="280" duration="1" />
+      <LogNode _width="98" _hegiht="77" _x="117" _y="280" message="just log" />
+    </SequenceNode>
+  </RepeatNode>
+</RootNode>
